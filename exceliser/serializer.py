@@ -1,17 +1,68 @@
 import json
-import xlrd
+import collections
+from typing import Any
+import openpyxl
+
+from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.cell.cell import Cell
+
+IGNORED_NAMES = ["copy", "parent"]
 
 
 class WorkbookSerializer:
 
-    __slots__ = {"worbook", "json_encoder"}
+    __slots__ = {"workbook", "json_encoder"}
 
     def __init__(self, path: str, json_encoder=None) -> None:
         self.workbook = self._read_workbook(path)
         self.json_encoder = json_encoder or json
 
     def serialize(self):
-        pass
+        """
+        Serializes Excel worbook (file) to json format.
+        """
+        return dict(
+            worksheets=[
+                self._serialize_sheet(worksheet)
+                for worksheet in self.workbook.worksheets
+            ]
+        )
+
+    def _serialize_sheet(self, worksheet: Worksheet) -> dict:
+        return dict(
+            title=worksheet.title,
+            columns=[self._serialize_column(col) for col in worksheet.columns],
+        )
+
+    def _serialize_column(self, column: tuple) -> dict:
+        return dict(cells=[self._serialize_cell(cell) for cell in column])
+
+    def _serialize_cell(self, cell: Cell) -> dict:
+        return self._object_to_dict(cell)
+
+    def _object_to_dict(self, _object: Any) -> dict:
+        return dict(
+            (name, self._get_object_attribute(_object, name))
+            for name in dir(_object)
+            if not name.startswith("_")
+            and not self._attr_is_callable(_object, name)
+            and not name in IGNORED_NAMES
+        )
+
+    def _get_object_attribute(self, _object, name):
+        attr_value = getattr(_object, name)
+        if self._value_is_builtin_type(attr_value):
+            return attr_value
+        return self._object_to_dict(attr_value)
+
+    def _value_is_builtin_type(self, value) -> bool:
+        return value.__class__.__module__ == "builtins"
+
+    def _attr_is_callable(self, _object, attr) -> bool:
+        try:
+            return isinstance(getattr(_object, attr), collections.Callable)
+        except NotImplementedError:
+            return True
 
     def _read_workbook(self, path: str, formatting_info: bool = True):
         """
@@ -20,4 +71,4 @@ class WorkbookSerializer:
         By default formatting info is True, which does 
         take more memory but provides additional info about workbook.
         """
-        return xlrd.open_worbook(path, formatting_info=formatting_info)
+        return openpyxl.open(filename=path)
