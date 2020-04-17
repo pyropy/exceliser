@@ -1,15 +1,15 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name="exceliser",
     packages=["exceliser"],
-    version="0.0.1",
+    version="0.0.2b",
     license="MIT",
     description="Exceliser is a tool for helping you serialize your excel documents to json or deserialize json back to excel document.",
     author="Srdjan Stankovic",
     author_email="stankovic.srdjo@gmail.com",
     url="https://github.com/pyropy/exceliser",
-    download_url="https://github.com/pyropy/exceliser/archive/0.0.1.tar.gz",
+    download_url="https://github.com/pyropy/exceliser/archive/0.0.2b.tar.gz",
     keywords=[
         "Excel",
         "JSON",
