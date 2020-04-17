@@ -28,6 +28,9 @@ class WorbookDeserializer:
             decoder = json_decoder or self._json_encoder
             self._json_file = self._read_json_file(path, decoder)
 
+        if output_name:
+            self._output_name = output_name
+
         for sheet in self._json_file.get('worksheets'):
             self._deserialize_sheet(sheet)
 
@@ -36,14 +39,13 @@ class WorbookDeserializer:
     def _deserialize_sheet(self, data: dict) -> None:
         worksheet = self._workbook.create_sheet(title=data.get('title'))
         for row in data.get('rows'):
-            row_data = list()
+            row_data = []
             for col_idx, cell_data in enumerate(row.get('cells')):
                 # because the WriteOnlySheet does not support
                 # adding cell, rather appening whole rows it is
                 # neccessary to append None values to row in order
                 # to preserve cell column index
                 cell_col_idx = cell_data.get('column')
-                print(col_idx, cell_col_idx)
                 if col_idx + 1 != cell_col_idx:
                     row_data.extend([None] * (cell_col_idx - (col_idx + 1)))
 

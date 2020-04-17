@@ -33,7 +33,8 @@ class WorkbookSerializer:
         )
 
     def _serialize_row(self, row: tuple) -> dict:
-        return dict(cells=[self._serialize_cell(cell) for cell in row if type(cell) == ReadOnlyCell])
+        return dict(cells=[self._serialize_cell(cell)
+                           for cell in row if cell is ReadOnlyCell])
 
     def _serialize_cell(self, cell: ReadOnlyCell) -> Union[dict, None]:
         return self._object_to_dict(cell)
