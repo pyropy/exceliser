@@ -18,9 +18,7 @@ class WorkbookSerializer:
         self.json_encoder = json_encoder or json
 
     def serialize(self):
-        """
-        Serializes Excel worbook (file) to json format.
-        """
+        """Serializes Excel worbook (file) to json format."""
         return dict(
             worksheets=[
                 self._serialize_sheet(worksheet)
@@ -41,13 +39,10 @@ class WorkbookSerializer:
         return self._object_to_dict(cell)
 
     def _object_to_dict(self, _object: Any) -> dict:
-        return dict(
-            (name, self._get_object_attribute(_object, name))
-            for name in dir(_object)
-            if not name.startswith("_")
-            and not self._attr_is_callable(_object, name)
-            and not name in IGNORED_NAMES
-        )
+        return {name: self._get_object_attribute(_object, name)
+                for name in dir(_object) if not name.startswith("_")
+                and not self._attr_is_callable(_object, name)
+                and name not in IGNORED_NAMES}
 
     def _get_object_attribute(self, _object, name):
         attr_value = getattr(_object, name)
@@ -55,10 +50,12 @@ class WorkbookSerializer:
             return attr_value
         return self._object_to_dict(attr_value)
 
-    def _value_is_builtin_type(self, value) -> bool:
+    @staticmethod
+    def _value_is_builtin_type(value: Any) -> bool:
         return value.__class__.__module__ == "builtins"
 
-    def _attr_is_callable(self, _object, attr) -> bool:
+    @staticmethod
+    def _attr_is_callable(_object: Any, attr: str) -> bool:
         try:
             return isinstance(getattr(_object, attr), collections.Callable)
         except NotImplementedError:
