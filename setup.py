@@ -20,7 +20,7 @@ setup(
     ],
     install_requires=["pytest==5.4.1",
                       "openpyxl>=2.6.3",
-                      "orjson==2.6.5"
+                      "orjson>=2.0.11"
                       ],
     classifiers=[
         "Development Status :: 3 - Alpha",
