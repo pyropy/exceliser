@@ -1,6 +1,6 @@
 import json
-from .serializer import WorkbookSerializer
-from .deserializer import WorbookDeserializer
+from . import WorkbookSerializer
+from . import WorbookDeserializer
 
 """
     Main API for serializing and deserializing 
