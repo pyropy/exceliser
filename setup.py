@@ -18,7 +18,7 @@ setup(
         "Serializer",
         "Deserializer",
     ],
-    install_requires=["pytest==5.4.1", "xlrd==1.2.0"],
+    install_requires=["pytest==5.4.1", "openpyxl==3.0.3"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
