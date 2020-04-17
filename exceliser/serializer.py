@@ -1,7 +1,6 @@
 import json
 import collections
 from typing import Any
-import xlrd
 import openpyxl
 
 from openpyxl.worksheet.worksheet import Worksheet
