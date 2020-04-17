@@ -1,12 +1,13 @@
 import json
 import collections
 from typing import Any
+import xlrd
 import openpyxl
 
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
 
-IGNORED_NAMES = ["copy", "parent"]
+IGNORED_ATTRS = ["copy", "parent"]
 
 
 class WorkbookSerializer:
@@ -29,11 +30,13 @@ class WorkbookSerializer:
     def _serialize_sheet(self, worksheet: Worksheet) -> dict:
         return dict(
             title=worksheet.title,
-            columns=[self._serialize_column(col) for col in worksheet.columns],
+            columns=[self._serialize_column(
+                col, idx) for idx, col in enumerate(worksheet.columns)],
         )
 
-    def _serialize_column(self, column: tuple) -> dict:
-        return dict(cells=[self._serialize_cell(cell) for cell in column])
+    def _serialize_column(self, column: tuple, column_index: int) -> dict:
+        return dict(index=column_index + 1,
+                    cells=[self._serialize_cell(cell) for cell in column if cell.value])
 
     def _serialize_cell(self, cell: Cell) -> dict:
         return self._object_to_dict(cell)
@@ -42,7 +45,7 @@ class WorkbookSerializer:
         return {name: self._get_object_attribute(_object, name)
                 for name in dir(_object) if not name.startswith("_")
                 and not self._attr_is_callable(_object, name)
-                and name not in IGNORED_NAMES}
+                and name not in IGNORED_ATTRS}
 
     def _get_object_attribute(self, _object, name):
         attr_value = getattr(_object, name)
