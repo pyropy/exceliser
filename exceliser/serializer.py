@@ -1,10 +1,10 @@
 import json
 import collections
-from typing import Any
+from typing import Any, Union
 import openpyxl
 
-from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.cell.cell import Cell
+from openpyxl.worksheet._read_only import ReadOnlyWorksheet
+from openpyxl.cell.read_only import ReadOnlyCell
 
 IGNORED_ATTRS = ["copy", "parent"]
 
@@ -26,18 +26,16 @@ class WorkbookSerializer:
             ]
         )
 
-    def _serialize_sheet(self, worksheet: Worksheet) -> dict:
+    def _serialize_sheet(self, worksheet: ReadOnlyWorksheet) -> dict:
         return dict(
             title=worksheet.title,
-            columns=[self._serialize_column(
-                col, idx) for idx, col in enumerate(worksheet.columns)],
+            rows=[self._serialize_row(col) for col in worksheet.rows]
         )
 
-    def _serialize_column(self, column: tuple, column_index: int) -> dict:
-        return dict(index=column_index + 1,
-                    cells=[self._serialize_cell(cell) for cell in column if cell.value])
+    def _serialize_row(self, row: tuple) -> dict:
+        return dict(cells=[self._serialize_cell(cell) for cell in row if cell.value])
 
-    def _serialize_cell(self, cell: Cell) -> dict:
+    def _serialize_cell(self, cell: ReadOnlyCell) -> Union[dict, None]:
         return self._object_to_dict(cell)
 
     def _object_to_dict(self, _object: Any) -> dict:
@@ -71,4 +69,4 @@ class WorkbookSerializer:
         By default formatting info is True, which does 
         take more memory but provides additional info about workbook.
         """
-        return openpyxl.open(filename=path)
+        return openpyxl.open(filename=path, read_only=True)
