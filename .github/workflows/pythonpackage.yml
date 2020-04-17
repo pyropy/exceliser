@@ -40,7 +40,7 @@ jobs:
         pip install pytest
         pytest
   coverage:
-     steps:
+    steps:
     - uses: actions/checkout@master
     - name: Setup Python  
       uses: actions/setup-python@master
