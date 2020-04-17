@@ -64,7 +64,8 @@ class WorkbookSerializer:
         except NotImplementedError:
             return True
 
-    def _read_workbook(self, path: str, formatting_info: bool = True):
+    @staticmethod
+    def _read_workbook(path: str, formatting_info: bool = True):
         """
         Reads excel file into memory.
 
