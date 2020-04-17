@@ -12,7 +12,7 @@ def main(file, serialize, output_name):
     if serialize:
         result = _serialize(file)
         output_name = output_name.replace(".json", "")
-        json.dump(result, open(f"{output_name}.json", "w"))
+        json.dump(result, open("{}.json".format(output_name), "w"))
 
 
 if __name__ == "__main__":
