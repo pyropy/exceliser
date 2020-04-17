@@ -1,5 +1,6 @@
 import json
 from .serializer import WorkbookSerializer
+from .deserializer import WorbookDeserializer
 
 """
     Main API for serializing and deserializing 
@@ -12,5 +13,6 @@ def serialize(path: str, json_encoder=None):
     return serializer.serialize()
 
 
-def deserialize(path: str, json_decoder=None):
-    pass
+def deserialize(path: str, output_name: str, json_decoder=None):
+    deserializer = WorbookDeserializer(path, output_name, json_decoder)
+    return deserializer.deserialize()

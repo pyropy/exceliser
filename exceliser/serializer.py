@@ -1,4 +1,4 @@
-import json
+import orjson
 import collections
 from typing import Any, Union
 import openpyxl
@@ -15,7 +15,7 @@ class WorkbookSerializer:
 
     def __init__(self, path: str, json_encoder=None) -> None:
         self.workbook = self._read_workbook(path)
-        self.json_encoder = json_encoder or json
+        self.json_encoder = json_encoder or orjson
 
     def serialize(self):
         """Serializes Excel worbook (file) to json format."""
@@ -33,7 +33,7 @@ class WorkbookSerializer:
         )
 
     def _serialize_row(self, row: tuple) -> dict:
-        return dict(cells=[self._serialize_cell(cell) for cell in row if cell.value])
+        return dict(cells=[self._serialize_cell(cell) for cell in row if type(cell) == ReadOnlyCell])
 
     def _serialize_cell(self, cell: ReadOnlyCell) -> Union[dict, None]:
         return self._object_to_dict(cell)

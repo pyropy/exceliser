@@ -1,5 +1,5 @@
 import click
-import json
+import orjson
 from exceliser.workbook import serialize as _serialize
 from exceliser.workbook import deserialize as _deserialize
 
@@ -13,10 +13,10 @@ def main(file, serialize, output_name):
     if serialize:
         result = _serialize(file)
         output_name = output_name.replace(".json", "")
-        json.dump(result, open("{}.json".format(output_name), "w"))
+        orjson.dump(result, open("{}.json".format(output_name), "w"))
     else:
         # TODO: Implement deserialization
-        _deserialize(file, json)
+        _deserialize(file, output_name, orjson)
 
 
 if __name__ == "__main__":
