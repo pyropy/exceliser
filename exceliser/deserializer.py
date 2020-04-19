@@ -1,8 +1,12 @@
-import orjson
+import inspect
+import json
 
+from typing import Any
 from openpyxl.workbook import Workbook
 from openpyxl.worksheet._write_only import WriteOnlyWorksheet
 from openpyxl.cell import WriteOnlyCell
+from openpyxl.comments import Comment
+from openpyxl.styles import Font, Fill, Alignment, Border, Side, Color
 
 
 class WorbookDeserializer:
@@ -18,7 +22,7 @@ class WorbookDeserializer:
         # value shared between functions; endproduct of deserialization
         self._workbook = Workbook(
             write_only=True)
-        self._json_decoder = json_decoder or orjson
+        self._json_decoder = json_decoder or json
         self._json_file = self._read_json_file(path, self._json_decoder)
         self._output_name = output_name
 
@@ -54,12 +58,33 @@ class WorbookDeserializer:
 
             worksheet.append(row_data)
 
-    @staticmethod
-    def _create_cell(worksheet: WriteOnlyWorksheet, data: dict) -> WriteOnlyCell:
+    def _create_cell(self, worksheet: WriteOnlyWorksheet, data: dict) -> WriteOnlyCell:
         cell = WriteOnlyCell(ws=worksheet, value=data.get('value'))
         cell.column = data.get('column')
         cell.row = data.get('row')
+
+        # create color object from color dict first
+        color_data = data.get('font').pop('color')
+        data['font']['color'] = self._dict_to_object(color_data, Color)
+
+        # cell.font = self._dict_to_object(data.get('font'), Font)
+        cell.alignment = self._dict_to_object(data.get('alignment'), Alignment)
+        cell.border = self._create_font_borders(data.get('border'))
         return cell
+
+    def _create_font_borders(self, data: dict) -> Border:
+        border_data = dict()
+        for side in inspect.getargspec(Border.__init__).args:
+            if data.get(side) is dict:
+                border_data[side] = self._dict_to_object(data[side], Side)
+
+        return self._dict_to_object(border_data, Border)
+
+    @staticmethod
+    def _dict_to_object(data: dict, _object: Any) -> object:
+        """ Initializes given object from dictionary """
+        return _object(**{arg: value for arg, value in data.items()
+                          if arg in inspect.getargspec(_object.__init__).args})
 
     @staticmethod
     def _read_json_file(path: str, json_decoder):

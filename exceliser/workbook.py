@@ -8,11 +8,9 @@ from . import WorbookDeserializer
 """
 
 
-def serialize(path: str, json_encoder=None):
-    serializer = WorkbookSerializer(path, json_encoder)
-    return serializer.serialize()
+def serialize(path: str):
+    return WorkbookSerializer(path).serialize()
 
 
 def deserialize(path: str, output_name: str, json_decoder=None):
-    deserializer = WorbookDeserializer(path, output_name, json_decoder)
-    return deserializer.deserialize()
+    return WorbookDeserializer(path, output_name, json_decoder).deserialize()

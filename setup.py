@@ -19,8 +19,7 @@ setup(
         "Deserializer",
     ],
     install_requires=["pytest==5.4.1",
-                      "openpyxl>=2.6.3",
-                      "orjson>=2.0.11"
+                      "openpyxl>=2.6.3"
                       ],
     classifiers=[
         "Development Status :: 3 - Alpha",
