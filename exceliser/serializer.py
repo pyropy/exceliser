@@ -1,11 +1,9 @@
-import json
 import collections
-from typing import Any
+from typing import Any, Tuple, Union
 import openpyxl
 
 from openpyxl.worksheet._read_only import ReadOnlyWorksheet
 from openpyxl.cell.read_only import ReadOnlyCell, EmptyCell
-from openpyxl.cell.cell import Cell
 
 IGNORED_ATTRS = ["copy", "parent"]
 
@@ -13,9 +11,6 @@ IGNORED_ATTRS = ["copy", "parent"]
 class WorkbookSerializer:
 
     __slots__ = {"workbook"}
-
-    def __init__(self, path: str) -> None:
-        self.workbook = self._read_workbook(path)
 
     def serialize(self):
         """Serializes Excel worbook (file) to json format."""
@@ -32,10 +27,9 @@ class WorkbookSerializer:
             rows=[self._serialize_row(row) for row in worksheet.rows]
         )
 
-    def _serialize_row(self, row: tuple) -> dict:
-        print(row)
+    def _serialize_row(self, row: Tuple[Union[ReadOnlyCell, EmptyCell]]) -> dict:
         return dict(cells=[self._serialize_cell(cell)
-                           for cell in row if cell is not EmptyCell])
+                           for cell in row if isinstance(cell, ReadOnlyCell)])
 
     def _serialize_cell(self, cell: ReadOnlyCell) -> dict:
         return self._object_to_dict(cell)
