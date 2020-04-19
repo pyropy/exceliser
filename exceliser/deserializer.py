@@ -7,6 +7,7 @@ from openpyxl.worksheet._write_only import WriteOnlyWorksheet
 from openpyxl.cell import WriteOnlyCell
 from openpyxl.comments import Comment
 from openpyxl.styles import Font, Fill, Alignment, Border, Side, Color
+from openpyxl.styles.colors import RGB
 
 
 class WorbookDeserializer:
@@ -63,28 +64,46 @@ class WorbookDeserializer:
         cell.column = data.get('column')
         cell.row = data.get('row')
 
-        # create color object from color dict first
-        color_data = data.get('font').pop('color')
-        data['font']['color'] = self._dict_to_object(color_data, Color)
-
-        # cell.font = self._dict_to_object(data.get('font'), Font)
+        cell.font = self._create_cell_font(data.get('font'))
         cell.alignment = self._dict_to_object(data.get('alignment'), Alignment)
-        cell.border = self._create_font_borders(data.get('border'))
+        cell.border = self._create_cell_borders(data.get('border'))
         return cell
 
-    def _create_font_borders(self, data: dict) -> Border:
-        border_data = dict()
-        for side in inspect.getargspec(Border.__init__).args:
-            if data.get(side) is dict:
-                border_data[side] = self._dict_to_object(data[side], Side)
+    def _create_cell_font(self, data: dict) -> Font:
+        # create color object from color dict first
+        if 'color' in data:
+            data['color'] = self._create_color(data['color'])
+        return self._dict_to_object(data, Font)
 
+    def _create_cell_borders(self, data: dict) -> Border:
+        """
+        Creates sides from cell dictionary and combines them into Border object.
+        :param data: Dictionary holding cell borders data.
+        :return: Border object holding styles for cell side borders.
+        """
+        border_data = {}
+        for side in inspect.getfullargspec(Border.__init__).args:
+            side_data = data.get(side)
+            if isinstance(side_data, dict):
+                if 'color' in side_data:
+                    color_data = side_data.pop('color')
+                    if isinstance(color_data, dict):
+                        side_data['color'] = self._create_color(color_data)
+                border_data[side] = self._dict_to_object(side_data, Side)
         return self._dict_to_object(border_data, Border)
+
+    def _create_color(self, color_data: dict) -> Color:
+        # TODO: Implement colors for font
+        if isinstance(color_data['index'], str):
+            color_data['index'] = int(color_data['index'], base=16)
+        color_data['index'] = 16777215
+        return self._dict_to_object(color_data, Color)
 
     @staticmethod
     def _dict_to_object(data: dict, _object: Any) -> object:
         """ Initializes given object from dictionary """
         return _object(**{arg: value for arg, value in data.items()
-                          if arg in inspect.getargspec(_object.__init__).args})
+                          if arg in inspect.getfullargspec(_object.__init__).args})
 
     @staticmethod
     def _read_json_file(path: str, json_decoder):
