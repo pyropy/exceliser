@@ -4,7 +4,7 @@ from typing import Any
 import openpyxl
 
 from openpyxl.worksheet._read_only import ReadOnlyWorksheet
-from openpyxl.cell.read_only import ReadOnlyCell
+from openpyxl.cell.read_only import ReadOnlyCell, EmptyCell
 from openpyxl.cell.cell import Cell
 
 IGNORED_ATTRS = ["copy", "parent"]
@@ -33,10 +33,11 @@ class WorkbookSerializer:
         )
 
     def _serialize_row(self, row: tuple) -> dict:
+        print(row)
         return dict(cells=[self._serialize_cell(cell)
-                           for cell in row if cell is ReadOnlyCell])
+                           for cell in row if cell is not EmptyCell])
 
-    def _serialize_cell(self, cell: Cell) -> dict:
+    def _serialize_cell(self, cell: ReadOnlyCell) -> dict:
         return self._object_to_dict(cell)
 
     def _object_to_dict(self, _object: Any) -> dict:
