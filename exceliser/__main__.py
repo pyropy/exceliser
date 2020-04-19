@@ -16,7 +16,7 @@ def main(file, serialize, output_name):
         print(result)
         json.dump(result, open("{}.json".format(output_name), "w"))
     else:
-        _deserialize(file, output_name, json)
+        _deserialize(file, json).save(output_name)
 
 
 if __name__ == "__main__":

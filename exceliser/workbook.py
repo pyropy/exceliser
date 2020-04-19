@@ -12,5 +12,5 @@ def serialize(path: str):
     return WorkbookSerializer(path).serialize()
 
 
-def deserialize(path: str, output_name: str, json_decoder=None):
-    return WorbookDeserializer(path, output_name, json_decoder).deserialize()
+def deserialize(path: str, json_decoder=None):
+    return WorbookDeserializer(path, json_decoder).deserialize()

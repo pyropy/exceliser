@@ -13,9 +13,9 @@ from openpyxl.styles import Font, Alignment, Border, Side, Color
 
 class WorbookDeserializer:
 
-    __slots__ = {"_json_file", "_json_decoder", "_workbook", "_output_name"}
+    __slots__ = {"_json_file", "_json_decoder", "_workbook"}
 
-    def __init__(self, path: str, output_name: str, json_decoder=None):
+    def __init__(self, path: str, json_decoder=None):
         """
         :param path: Path to JSON file.
         :param output_name: Name for output excel file.
@@ -26,21 +26,17 @@ class WorbookDeserializer:
             write_only=True)
         self._json_decoder = json_decoder or json
         self._json_file = self._read_json_file(path, self._json_decoder)
-        self._output_name = output_name
 
-    def deserialize(self, path: str = None, output_name: str = None, json_decoder=None):
+    def deserialize(self, path: str = None, json_decoder=None):
         """ Deserializes given json file to excel file """
         if path:
             decoder = json_decoder or self._json_encoder
             self._json_file = self._read_json_file(path, decoder)
 
-        if output_name:
-            self._output_name = output_name
-
         for sheet in self._json_file.get('worksheets'):
             self._deserialize_sheet(sheet)
 
-        self._workbook.save(self._output_name)
+        return self._workbook
 
     def _deserialize_sheet(self, data: dict) -> None:
         worksheet = self._workbook.create_sheet(title=data.get('title'))
