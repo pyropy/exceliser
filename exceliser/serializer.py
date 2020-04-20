@@ -12,10 +12,13 @@ class WorkbookSerializer:
 
     __slots__ = {"workbook"}
 
+    def __init__(self, path: str):
+        self.workbook = self._read_workbook(path)
+
     def serialize(self):
         """Serializes Excel worbook (file) to json format."""
         return dict(
-            properties=self.worbook.properties.__dict__,
+            properties=self.workbook.properties.__dict__,
             worksheets=[
                 self._serialize_sheet(worksheet)
                 for worksheet in self.workbook.worksheets
@@ -59,11 +62,8 @@ class WorkbookSerializer:
             return True
 
     @staticmethod
-    def _read_workbook(path: str, formatting_info: bool = True):
+    def _read_workbook(path: str):
         """
         Reads excel file into memory.
-
-        By default formatting info is True, which does 
-        take more memory but provides additional info about workbook.
         """
         return openpyxl.open(filename=path, read_only=True)

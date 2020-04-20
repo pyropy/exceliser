@@ -37,6 +37,21 @@ workbook = deserialize(path="/path/to/mydata.json")
 worbook.save('myworbook.xlsx')
 ```
 
+## Development
+
+### Running tests
+
+To run all tests simply run following `make` command in your terminal:
+
+```bash
+make test
+```
+
+To see rest of the commands, including ones for running tests type following in the terminal:
+
+```bash
+make help
+```
 
 ## Motivation
 
