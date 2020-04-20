@@ -2,6 +2,8 @@
 
 > NOTE: This is still WIP so bugs might occure.
 
+![Python package](https://github.com/pyropy/exceliser/workflows/Python%20package/badge.svg?branch=master) ![Upload Python Package](https://github.com/pyropy/exceliser/workflows/Upload%20Python%20Package/badge.svg) [![DeepSource](https://static.deepsource.io/deepsource-badge-dark-mini.svg)](https://deepsource.io/gh/pyropy/exceliser/?ref=repository-badge)
+
 ## Description
 
 **Exceliser** is a tool for helping you **serialize** your excel documents to json or **deserialize** json back to excel document.
