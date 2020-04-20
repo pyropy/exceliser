@@ -13,10 +13,10 @@ def main(file, serialize, output_name):
     if serialize:
         result = _serialize(file)
         output_name = output_name.replace(".json", "")
+        print(result)
         json.dump(result, open("{}.json".format(output_name), "w"))
     else:
-        # TODO: Implement deserialization
-        _deserialize(file, json)
+        _deserialize(file, json).save(output_name)
 
 
 if __name__ == "__main__":

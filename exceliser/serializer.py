@@ -1,43 +1,41 @@
-import json
 import collections
-from typing import Any
+from typing import Any, Tuple, Union
 import openpyxl
 
-from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.cell.cell import Cell
+from openpyxl.worksheet._read_only import ReadOnlyWorksheet
+from openpyxl.cell.read_only import ReadOnlyCell, EmptyCell
 
 IGNORED_ATTRS = ["copy", "parent"]
 
 
 class WorkbookSerializer:
 
-    __slots__ = {"workbook", "json_encoder"}
+    __slots__ = {"workbook"}
 
-    def __init__(self, path: str, json_encoder=None) -> None:
+    def __init__(self, path: str):
         self.workbook = self._read_workbook(path)
-        self.json_encoder = json_encoder or json
 
     def serialize(self):
         """Serializes Excel worbook (file) to json format."""
         return dict(
+            properties=self.workbook.properties.__dict__,
             worksheets=[
                 self._serialize_sheet(worksheet)
                 for worksheet in self.workbook.worksheets
             ]
         )
 
-    def _serialize_sheet(self, worksheet: Worksheet) -> dict:
+    def _serialize_sheet(self, worksheet: ReadOnlyWorksheet) -> dict:
         return dict(
             title=worksheet.title,
-            columns=[self._serialize_column(
-                col, idx) for idx, col in enumerate(worksheet.columns)],
+            rows=[self._serialize_row(row) for row in worksheet.rows]
         )
 
-    def _serialize_column(self, column: tuple, column_index: int) -> dict:
-        return dict(index=column_index + 1,
-                    cells=[self._serialize_cell(cell) for cell in column if cell.value])
+    def _serialize_row(self, row: Tuple[Union[ReadOnlyCell, EmptyCell]]) -> dict:
+        return dict(cells=[self._serialize_cell(cell)
+                           for cell in row if isinstance(cell, ReadOnlyCell)])
 
-    def _serialize_cell(self, cell: Cell) -> dict:
+    def _serialize_cell(self, cell: ReadOnlyCell) -> dict:
         return self._object_to_dict(cell)
 
     def _object_to_dict(self, _object: Any) -> dict:
@@ -64,11 +62,6 @@ class WorkbookSerializer:
             return True
 
     @staticmethod
-    def _read_workbook(path: str, formatting_info: bool = True):
-        """
-        Reads excel file into memory.
-
-        By default formatting info is True, which does 
-        take more memory but provides additional info about workbook.
-        """
-        return openpyxl.open(filename=path)
+    def _read_workbook(path: str):
+        """ Reads excel file into memory. """
+        return openpyxl.open(filename=path, read_only=True)
