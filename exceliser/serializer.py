@@ -15,6 +15,7 @@ class WorkbookSerializer:
     def serialize(self):
         """Serializes Excel worbook (file) to json format."""
         return dict(
+            properties=self.worbook.properties.__dict__,
             worksheets=[
                 self._serialize_sheet(worksheet)
                 for worksheet in self.workbook.worksheets
