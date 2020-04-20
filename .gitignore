@@ -211,5 +211,4 @@ dmypy.json
 venv/
 .venv/
 .vscode/
-*.xlsx
 venv/
