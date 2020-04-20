@@ -1,4 +1,3 @@
-import json
 from . import WorkbookSerializer
 from . import WorbookDeserializer
 

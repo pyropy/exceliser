@@ -19,7 +19,8 @@ setup(
         "Deserializer",
     ],
     install_requires=["pytest==5.4.1",
-                      "openpyxl>=2.6.3"
+                      "openpyxl>=2.6.3",
+                      "pytest==5.4.1"
                       ],
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -27,7 +28,6 @@ setup(
         "Topic :: Software Development :: Build Tools",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
