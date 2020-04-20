@@ -10,8 +10,8 @@ def test_serialize_workbook(serializer_workbook_path):
     assert type(serialized_workbook) == dict
     assert 'properties' in serialized_workbook
     assert 'worksheets' in serialized_workbook
-    assert len(serialized_workbook['worksheets']
-               ) == 2, "There should be two worksheets in given workbook."
+    assert len(serialized_workbook['worksheets']) == 2,\
+        "There should be two worksheets in given workbook."
 
     first_worksheet = serialized_workbook['worksheets'][0]
     assert type(first_worksheet) == dict
@@ -22,5 +22,5 @@ def test_serialize_workbook(serializer_workbook_path):
 
     assert type(first_row) == dict
     assert 'cells' in first_row
-    assert len(
-        first_row['cells']) == 2, "There should be only two cells in first row of first worksheet."
+    assert len(first_row['cells']) == 2, \
+        "There should be only two cells in first row of first worksheet."

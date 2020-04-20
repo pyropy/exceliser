@@ -63,7 +63,5 @@ class WorkbookSerializer:
 
     @staticmethod
     def _read_workbook(path: str):
-        """
-        Reads excel file into memory.
-        """
+        """ Reads excel file into memory. """
         return openpyxl.open(filename=path, read_only=True)
