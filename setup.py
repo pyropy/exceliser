@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name="exceliser",
     packages=["exceliser"],
-    version="0.0.2b",
+    version="0.0.3",
     license="MIT",
     description="Exceliser is a tool for helping you serialize your excel documents to json or deserialize json back to excel document.",
     author="Srdjan Stankovic",
