@@ -14,7 +14,26 @@ To install this package simply run following command in your terminal:
 pip install exceliser
 ```
 
-## Examples
+## Usage via CLI
+
+After installing the library on your machine (or virtual environment) you can serialize/deserialize documents via package CLI.
+
+### Serialization
+
+```bash
+python -m exceliser --serialize --file test.xlsx --output-name test.json
+```
+
+### Deserialization
+
+```bash
+python -m exceliser --deserialize --file test.json --output-name test.xlsx
+```
+
+
+## Usage via importing the library
+
+You can also import `exceliser` library directly to your scripts to help you with serialization/deserialization of excel documents.
 
 ### Serialization
 
