@@ -78,10 +78,6 @@ make help
 
 Serialization of excel documents to json makes them suitable for storing to database and deserialized when needed rather then keeping them as files.
 
-## Contributors
-
-* None, but you can be the first one.
-
 ## Author
 
 * Srdjan Stankovic
