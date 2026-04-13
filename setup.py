@@ -18,7 +18,7 @@ setup(
         "Serializer",
         "Deserializer",
     ],
-    install_requires=["pytest==5.4.1",
+    install_requires=["pytest==9.0.3",
                       "openpyxl>=2.6.3"
                       ],
     classifiers=[
